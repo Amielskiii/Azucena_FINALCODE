@@ -1,0 +1,169 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+using namespace std;
+
+struct Car {
+    string make;
+    string model;
+    string licensePlate;
+    int horsepower;
+    double rentalPrice; // Added rental price
+    bool available;
+
+    Car(string make, string model, string licensePlate, int horsepower, double rentalPrice) {
+        this->make = make;
+        this->model = model;
+        this->licensePlate = licensePlate;
+        this->horsepower = horsepower;
+        this->rentalPrice = rentalPrice;
+        this->available = true;
+    }
+};
+
+vector<Car> cars;
+
+void addCar() {
+    string make, model, licensePlate;
+    int horsepower;
+    double rentalPrice; // Added rental price
+	cout << "Enter car make: ";
+    cin >> make;
+    cout << "Enter car model: ";
+    cin >> model;
+    cout << "Enter horsepower: ";
+    cin >> horsepower;
+    cout << "Enter rental price: $";
+    cin >> rentalPrice;
+    cout << "Enter car license plate: ";
+    cin >> licensePlate;
+    Car car(make, model, licensePlate, horsepower, rentalPrice);
+    cars.push_back(car);
+    cout << "Car added successfully!" << endl;
+}
+
+void removeCar() {
+    string licensePlate;
+    cout << "Enter car license plate to remove: ";
+    cin >> licensePlate;
+
+    for (auto it = cars.begin(); it != cars.end(); ++it) {
+        if (it->licensePlate == licensePlate) {
+            cars.erase(it);
+            cout << "Car removed successfully!" << endl;
+            return;
+        }
+    }
+    cout << "Wala dito yun tanga!" << endl;
+}
+
+void rentCar() {
+    string licensePlate, customerName;
+    cout << "Enter car license plate to rent: ";
+    cin >> licensePlate;
+
+    for (auto& car : cars) {
+        if (car.licensePlate == licensePlate && car.available) {
+            car.available = false;
+
+            cout << "Enter customer name: ";
+            cin >> customerName;
+
+            double payment;
+            cout << "Enter payment amount: $";
+            cin >> payment;
+
+            if (payment >= car.rentalPrice) {
+                cout << "Car rented successfully to " << customerName << " for $" << car.rentalPrice << " per day!" << endl;
+                cout << "Change: $" << (payment - car.rentalPrice) << endl;
+            } else {
+                cout << "Si gago wala ng budget." << endl;
+                car.available = true; // Return the car to the available state
+            }
+
+            return;
+        }
+    }
+    cout << "Kulit mong tanga ka wala nga o narentahan na!" << endl;
+}
+
+void returnCar() {
+    string licensePlate;
+    cout << "Enter car license plate to return: ";
+    cin >> licensePlate;
+
+    
+	for (auto& car : cars) {
+        if (car.licensePlate == licensePlate && !car.available) {
+            car.available = true;
+
+            cout << "Buti pa 'to marunong mag balik." << endl;
+            return;
+        }
+    }
+    cout << "Hindi pa narerentahan tanga ka!" << endl;
+}
+
+void listAvailableCars() {
+    cout << "Available Cars:" << endl;
+
+    for (const Car& car : cars) {
+        cout << "   Make: " << car.make << endl;
+        cout << "   Model: " << car.model << endl;
+        cout << "   Horsepower: " << car.horsepower << endl;
+        cout << "   Rental Price: $" << car.rentalPrice << " per day" << endl;
+        cout << "   License Plate: " << car.licensePlate << endl;
+        
+        if (car.available) {
+            cout << "   Status: Available" << endl;
+        } else {
+            cout << "   Status: Rented" << endl;
+        }
+        
+        cout << endl;
+    }
+}
+
+int main() {
+    int choice;
+
+    do {
+        cout << "=======================================\n";
+	    cout << "Rentahan na malolopit na kotse ni Amiel" << endl << endl;
+	    cout << "=======================================\n";
+        cout << "1. Add Car" << endl;
+        cout << "2. Remove Car" << endl;
+        cout << "3. Rent Car" << endl;
+        cout << "4. Return Car" << endl;
+        cout << "5. List Available Cars" << endl;
+        cout << "0. Exit" << endl << endl;
+
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addCar();
+                break;
+            case 2:
+                removeCar();
+                break;
+            case 3:
+                rentCar();
+                break;
+            case 4:
+                returnCar();
+                break;
+            case 5:
+                listAvailableCars();
+                break;
+            case 0:
+                cout << "Exiting..." << endl;
+                break;
+            default:
+                cout << "Invalid choice!" << endl;
+        }
+    } while (choice != 0);
+
+    return 0;
+}
